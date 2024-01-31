@@ -1,7 +1,10 @@
 package com.example.apiejemplo.entities;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.List;
 
 @Entity
 @Table(name = "manufacturers")
@@ -21,8 +24,12 @@ public class Manufacturer {
 
     private Integer year;
 
-    @Column(name = "num_employees")
+    @Column(name = "num_employees")  //En la tabla tendrá este nombre
     private Integer numEmployees;
+
+    @OneToMany(mappedBy = "manufacturer", fetch = FetchType.EAGER)
+    @JsonView
+    private List<Department> departments;
 
 
 
