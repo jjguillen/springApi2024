@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -28,8 +29,7 @@ public class Manufacturer {
     private Integer numEmployees;
 
     @OneToMany(mappedBy = "manufacturer", fetch = FetchType.EAGER)
-    @JsonView
-    private List<Department> departments;
+    private List<Department> departments = new ArrayList<>();
 
 
 
