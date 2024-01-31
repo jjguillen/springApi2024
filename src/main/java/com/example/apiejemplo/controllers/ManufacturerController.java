@@ -1,13 +1,11 @@
 package com.example.apiejemplo.controllers;
 
 import com.example.apiejemplo.entities.Manufacturer;
+import com.example.apiejemplo.repositories.ManufacturerRepository;
 import com.example.apiejemplo.services.ManufacturerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -17,6 +15,9 @@ public class ManufacturerController {
 
     @Autowired
     private ManufacturerService service;
+
+    @Autowired
+    private ManufacturerRepository repository;
 
     //Un método por cada url de la API relacionada con Manufacturer
 
@@ -46,5 +47,30 @@ public class ManufacturerController {
         return this.service.findById(id)
                 .map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
+
+    @PostMapping("/manufacturers")
+    public ResponseEntity<Manufacturer> create(@RequestBody Manufacturer manufacturer) {
+        this.service.save(manufacturer);
+        return ResponseEntity.ok(manufacturer);
+    }
+
+    @PutMapping("/manufacturers")
+    public ResponseEntity<Manufacturer> update(@RequestBody Manufacturer manufacturer) {
+        this.service.save(manufacturer);
+        return ResponseEntity.ok(manufacturer);
+    }
+
+    /*  DELETE - http://localhost:8080/api/manufacturers/2  */
+    @DeleteMapping("/manufacturers/{id}")
+    public ResponseEntity<Object> delete(@PathVariable Long id) {
+        return this.service.findById(id)
+                .map( m -> {
+                            this.service.deleteById(id);
+                            return ResponseEntity.noContent().build();
+                        }).orElseGet(() -> ResponseEntity.notFound().build());
+
+    }
+
+
 
 }
