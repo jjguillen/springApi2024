@@ -3,6 +3,8 @@ package com.example.apiejemplo.services;
 import com.example.apiejemplo.entities.Manufacturer;
 import com.example.apiejemplo.repositories.ManufacturerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,16 +17,20 @@ public class ManufacturerServiceImpl implements ManufacturerService {
     @Autowired
     ManufacturerRepository repository;
 
-
     @Override
     public List<Manufacturer> findAll() {
         return this.repository.findAll();
     }
 
     @Override
-    public List<Manufacturer> findAllByYear(Integer year) {
+    public Page<Manufacturer> findAll(Pageable pageable) {
+        return this.repository.findAll(pageable);
+    }
+
+    @Override
+    public Page<Manufacturer> findAllByYear(Integer year, Pageable pageable) {
         Objects.requireNonNull(year); //Salta una excepción si year es null
-        return this.repository.findAllByYear(year);
+        return this.repository.findAllByYear(year, pageable);
     }
 
     @Override

@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
@@ -35,13 +36,11 @@ public class ManufacturerController {
     }
 
     /*  GET - http://localhost:8080/api/manufacturers/year/2023  */
-    @GetMapping("/manufacturers/year/{year}")
-    public ResponseEntity<List<Manufacturer>> findAllByYear(@PathVariable Integer year) {
-        List<Manufacturer> manufacturers = this.service.findAllByYear(year);
-        if (manufacturers.isEmpty())
-            return ResponseEntity.notFound().build();  //Devuelve 404 si no hay nada
-
-        return ResponseEntity.ok( manufacturers );     //Devuelve 200 y los manufacturers si hay algo
+    @GetMapping("/manufacturers/year/{year}/paginado")
+    public ResponseEntity<List<Manufacturer>> findAllByYear(@PathVariable Integer year, @RequestParam(defaultValue = "0") Integer page) {
+        var pageable = PageRequest.of(page, 3);
+        Page<Manufacturer> manufacturerPage = this.service.findAllByYear(year, pageable);
+        return ResponseEntity.ok(manufacturerPage.getContent());
     }
 
     /*  GET - http://localhost:8080/api/manufacturers/2  */
@@ -77,10 +76,16 @@ public class ManufacturerController {
     //PAGINACIÓN
     /*  GET - http://localhost:8080/api/manufacturers  */
     @GetMapping("/manufacturers/paginado")
-    public ResponseEntity<List<Manufacturer>> findAllPaginado(@RequestParam(defaultValue = "1") Integer page) {
+    public ResponseEntity<Map<String, Object>> findAllPaginado(@RequestParam(defaultValue = "0") Integer page) {
         var pageable = PageRequest.of(page, 3);
-        Page<Manufacturer> manufacturerPage = this.repository.findAll(pageable);
-        return ResponseEntity.ok(manufacturerPage.getContent());
+        Page<Manufacturer> manufacturerPage = this.service.findAll(pageable);
+        var pageInfo = Map.of(
+                "manufacturers" , manufacturerPage.getContent(),
+                "currentPage", manufacturerPage.getNumber(),
+                "totalItems", manufacturerPage.getTotalElements(),
+                "totalPages", manufacturerPage.getTotalPages()
+        );
+        return ResponseEntity.ok(pageInfo);
     }
 
 

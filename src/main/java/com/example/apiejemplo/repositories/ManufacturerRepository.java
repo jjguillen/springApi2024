@@ -14,6 +14,6 @@ public interface ManufacturerRepository extends JpaRepository<Manufacturer, Long
 
     Page<Manufacturer> findAll(Pageable pageable);
 
-    List<Manufacturer> findAllByYear(Integer year, Pageable pageable);
+    Page<Manufacturer> findAllByYear(Integer year, Pageable pageable);
     Optional<Manufacturer> findByName(String name);
 }
