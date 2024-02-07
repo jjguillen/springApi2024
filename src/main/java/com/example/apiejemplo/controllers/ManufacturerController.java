@@ -4,6 +4,9 @@ import com.example.apiejemplo.entities.Manufacturer;
 import com.example.apiejemplo.repositories.ManufacturerRepository;
 import com.example.apiejemplo.services.ManufacturerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -68,9 +71,17 @@ public class ManufacturerController {
                             this.service.deleteById(id);
                             return ResponseEntity.noContent().build();
                         }).orElseGet(() -> ResponseEntity.notFound().build());
-
     }
 
+
+    //PAGINACIÓN
+    /*  GET - http://localhost:8080/api/manufacturers  */
+    @GetMapping("/manufacturers/paginado")
+    public ResponseEntity<List<Manufacturer>> findAllPaginado(@RequestParam(defaultValue = "1") Integer page) {
+        var pageable = PageRequest.of(page, 3);
+        Page<Manufacturer> manufacturerPage = this.repository.findAll(pageable);
+        return ResponseEntity.ok(manufacturerPage.getContent());
+    }
 
 
 }
